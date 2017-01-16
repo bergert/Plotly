@@ -1,0 +1,71 @@
+---
+title: "FAO.FishStat.Global Capture Production.Data"
+author: "Thomas Berger"
+date: "1/16/2017"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## FAO Global Catch 2014
+
+FAO Global catch contains capture production statistics by country or territory, species item, and FAO Major Fishing Area for the reporting year 2014.
+
+The data was loaded from the FAO query panel: http://www.fao.org/fishery/statistics/global-capture-production/query/en, and saved into a CSV file for this report. Data downloaded 09/01/2017.
+
+The github repository is here:
+https://github.com/bergertom/Plotly
+
+The plotly slide show can be accessed here:
+https://bergertom.github.io/Plotly/ReadMe.html
+
+## Read and clean the data
+
+```{r echo=TRUE}
+   # read data downloaded fom FAO web site
+   faodata <- read.csv("figis_guestnull.csv", na.strings = c("NA", "", NULL))
+   # remove numbers
+   faodata <- subset(faodata, Unit == 't')
+   # remove unit
+   faodata$Unit <- NULL
+   # remove symbol
+   faodata$S_2014 <- NULL
+   # fix column names
+   colnames(faodata)<- c("Country","Value.2014")
+   str(faodata)
+```
+
+## Prepare data for the plot
+```{r echo=TRUE}
+   # rank all countries catch
+   faodata <- transform(faodata, 
+          rank = ave(Value.2014, 
+                          FUN = function(x) rank(-x, ties.method = "first")))
+   # add ranking 11 ... 233 together
+   other_value <- sum(faodata[faodata$rank > 10,"Value.2014"])
+   # leave only the top 10 ranking countries
+   faodata <- subset(faodata, rank <= 10)
+   # add the others
+   faodata$rank <- NULL
+   faodata <- rbind(faodata, data.frame(Country="Others", Value.2014=other_value))
+   # shorten names for plot
+   faodata$Country <- as.character(faodata$Country)
+   faodata[9,1] <- "USA"
+   faodata[8,1] <- "Russia"
+   # round to millions
+   faodata$Value.2014 <- round(faodata$Value.2014 / 1000000,0)
+```
+
+## Global Capture 2014
+
+```{r warning=FALSE}
+   library(ggplot2)
+   ggplot(faodata, aes(x=Country, y=Value.2014)) +
+       geom_point() +
+       ggtitle("Fishery: Global Catch 2014") +
+       labs(x="Country",y="Tons (million)") 
+```
+[FAO.FishStat.Global Capture Production.Data: 2014](http://www.fao.org/fishery/statistics/global-capture-production/query/en).
+
