@@ -19,7 +19,7 @@ The github repository is here:
 https://github.com/bergertom/Plotly
 
 The plotly slide show can be accessed here:
-https://bergertom.github.io/Plotly/ReadMe.html
+https://bergertom.github.io/Plotly/
 
 ## Read and clean the data
 
