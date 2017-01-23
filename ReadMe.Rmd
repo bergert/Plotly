@@ -9,17 +9,24 @@ output: ioslides_presentation
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-## FAO Global Catch 2014
+## FAO FishStat Global Catch 2014
 
-FAO Global catch contains capture production statistics by country or territory, species item, and FAO Major Fishing Area for the reporting year 2014.
-
-The data was loaded from the FAO query panel: http://www.fao.org/fishery/statistics/global-capture-production/query/en, and saved into a CSV file for this report. Data downloaded 09/01/2017.
+FAO Global catch contains capture production statistics by country or territory, species item, and FAO Major Fishing Area for the reporting year 2014; the most recent year for which data is available at the time of writing this report.
 
 The github repository is here:
 https://github.com/bergertom/Plotly
 
 The plotly slide show can be accessed here:
 https://bergertom.github.io/Plotly/
+
+## Data source
+
+The data was loaded from the FAO query panel: http://www.fao.org/fishery/statistics/global-capture-production/query/en, and saved into a CSV file for this report. Data downloaded 09/01/2017.
+
+Data shown is the global catch for human consumption; reported by FAO under as [Fish, crustaceans and molluscs, etc.] group.
+
+To arrive at the detail, select country [Alphabetical], on the Index select [All] to have all countries, then click [select all] to include them all into the query. Under time, select [2014] as year. Under Species, select [Ybk main groups], select [Fish, crustaceans and molluscs, etc.] to have data for human consumption. Under Display, select [Country] and [Quantity] to have the result by country.
+
 
 ## Read and clean the data
 
@@ -62,9 +69,11 @@ https://bergertom.github.io/Plotly/
 
 ```{r warning=FALSE}
    library(ggplot2)
-   ggplot(faodata, aes(x=Country, y=Value.2014)) +
-       geom_point() +
-       ggtitle("Fishery: Global Catch 2014") +
+   ggplot(faodata) +
+       geom_point(aes(x=Country, y=Value.2014,size=3, color='point', guide = FALSE)) +
+       ggtitle("FistStat: Global Catch 2014") +
+       scale_colour_manual(name="", values = c("point"="blue")) +
+       theme(legend.position="none") +
        labs(x="Country",y="Tons (million)") 
 ```
 [FAO.FishStat.Global Capture Production.Data: 2014](http://www.fao.org/fishery/statistics/global-capture-production/query/en).
