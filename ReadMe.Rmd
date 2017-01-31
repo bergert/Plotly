@@ -1,7 +1,7 @@
 ---
 title: "FAO.FishStat.Global Capture Production.Data"
 author: "Thomas Berger"
-date: "1/23/2017"
+date: "1/30/2017"
 output: ioslides_presentation
 ---
 
@@ -62,19 +62,21 @@ To arrive at the detail, select country [Alphabetical], on the Index select [All
    faodata[9,1] <- "USA"
    faodata[8,1] <- "Russia"
    # round to millions
-   faodata$Value.2014 <- round(faodata$Value.2014 / 1000000,0)
+   faodata$Value.2014 <- round(faodata$Value.2014 / 1000000,2)
 ```
 
 ## Global Capture 2014
 
-```{r warning=FALSE}
-   library(ggplot2)
-   ggplot(faodata) +
-       geom_point(aes(x=Country, y=Value.2014,size=3, color='point', guide = FALSE)) +
-       ggtitle("FistStat: Global Catch 2014") +
-       scale_colour_manual(name="", values = c("point"="blue")) +
-       theme(legend.position="none") +
-       labs(x="Country",y="Tons (million)") 
+```{r warning=FALSE, echo=FALSE, message=FALSE}
+   library(plotly)
+   p <- plot_ly(faodata, x = ~Country, y = ~Value.2014, name = "Women",
+             mode = "markers", marker = list(color = "blue")) %>%
+      layout(
+        title = "top 10 countries",
+        yaxis = list(title = "Catch (in millions) tons"),
+        margin = list(l = 65)
+   )
+   p
 ```
 [FAO.FishStat.Global Capture Production.Data: 2014](http://www.fao.org/fishery/statistics/global-capture-production/query/en).
 
